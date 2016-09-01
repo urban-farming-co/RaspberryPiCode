@@ -14,13 +14,17 @@ priority = 1
 def postToServer():
     s.enter(delayUntilNextPost, priority, postToServer, ())
     camera.capt()
-    url = 'http://karenmcculloch.me/urbanfarming/data'
-    img = open(os.environ['HOME']+'/piCode/image.jpg', 'rb')
+    url = 'http://karenmcculloch.me/urbanfarming/data/'
+
+    img = open('image.jpg', 'rb')
     multipart_data = MultipartEncoder(
         fields={'image': ('img.jpg', img, 'image/*'),
                 'soilMoisture': '1',
                 'relHumidity': '1',
-                'temp': '1'}
+                'plantName': "Basil",
+                'lightLuxLevel': '1',
+                'temperature': '1'
+                }
     )
     r = requests.post(url,
                       data=multipart_data,
