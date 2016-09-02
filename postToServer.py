@@ -1,10 +1,11 @@
 import requests
+import requests_toolbelt
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import os
 import sched
 import time
 import camera
-
+from get_Temp_and_relHumidity import get_ht
 
 s = sched.scheduler(time.time, time.sleep)
 delayUntilNextPost = 10  # seconds
@@ -14,16 +15,16 @@ priority = 1
 def postToServer():
     s.enter(delayUntilNextPost, priority, postToServer, ())
     camera.capt()
-    url = 'http://karenmcculloch.me/urbanfarming/data/'
-
-    img = open('image.jpg', 'rb')
+    url = 'http://holdingweb.eu-gb.mybluemix.net/urbanfarming/data/'
+    info = get_ht()
+    img = open('/home/pi/piCode/image.jpg', 'rb')
     multipart_data = MultipartEncoder(
         fields={'image': ('img.jpg', img, 'image/*'),
                 'soilMoisture': '1',
-                'relHumidity': '1',
+                'relHumidity': str(info["relhumidity"]), 
                 'plantName': "Basil",
                 'lightLuxLevel': '1',
-                'temperature': '1'
+                'temperature': str( info["temperature"])
                 }
     )
     r = requests.post(url,

@@ -14,4 +14,3 @@ def capt():
     camera.capture('image.jpg')
     camera.stop_preview()
 
-capt()
