@@ -28,5 +28,9 @@ GPIO.add_event_detect(channel, GPIO.BOTH, bouncetime=300)
 # This line asigns a function to the GPIO pin so that when the above line tells us there is a change on the pin, run this function
 GPIO.add_event_callback(channel, callback)
 
+def capt():
+    print (GPIO.input(channel))
+    return GPIO.input(channel)
+    
 
-print(GPIO.input(channel))
+capt()
