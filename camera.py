@@ -1,5 +1,8 @@
 from picamera import PiCamera
 from time import sleep
+import sched
+import time
+
 
 camera = PiCamera()
 camera.resolution=(100,100)
@@ -13,4 +16,6 @@ def capt():
     sleep(5)
     camera.capture('image.jpg')
     camera.stop_preview()
+
+
 

@@ -2,29 +2,53 @@ import requests
 import requests_toolbelt
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import os
-import sched
 import time
-import camera
-from get_Temp_and_relHumidity import get_ht
-from get_moisture import capt
-s = sched.scheduler(time.time, time.sleep)
-delayUntilNextPost = 60  # 4*60*60   seconds
-priority = 1
+
+global path
+path = '/home/pi/piCode/image.jpg'
+global lastImageUpdate # the last time that the image was modified
+lastImageUpdate =  os.path.getmtime(path)
+print(lastImageUpdate)
 
 def getStuff():
-    camera.capt()
-    info = get_ht() 
-    r = info["relhumidity"]
-    t = info["temperature"]
-    soil = capt() * 100
-    info["relhumidity"] = int(r) if r != None else 0 
-    info["temperature"] = int(t) if t != None else 0
+    global lastImageUpdate
+    c = open("color.txt", "r")
+    color = c.readline()
+    c.close()
+    s = open("moisture.txt", "r")
+    soil = s.readline()
+    s.close()
+    print(soil)
+    l = open("lux.txt", "r")
+    lux = l.readline()
+    l.close()
+    h = open("humidity.txt", "r")
+    r = h.readline()
+    h.close()
+    print(r)
+    info = {}
+    info["relhumidity"] = float(r) if r != None else 0 
+    h = open("temperature.txt", "r")
+    t = h.readline()
+    h.close()
+    print(t)
+    info["temperature"] = float(t) if t != None else 0
+    info["color"] = color
     info["soil"] = soil
-    info["img"] = open('/home/pi/piCode/image.jpg', 'rb')
+    info["lightLuxLevel"] = lux
+    lastmod =  os.path.getmtime(path)
+    print(str(lastmod ) + "    " + str(lastImageUpdate))
+    if lastmod>lastImageUpdate:
+        info["img"] = open(path, 'rb')
+        lastImageUpdate = lastmod
+    else:
+        info["img"] = None
+    info["light"] = "1"
+    for k in info.keys():
+	print (info[k])
     return info
 
 def postToServer():
-    s.enter(delayUntilNextPost, priority, postToServer, ())
     url = 'http://holdingweb.eu-gb.mybluemix.net/urbanfarming/data/'
     info = getStuff()
     for k in info.keys():
@@ -33,9 +57,11 @@ def postToServer():
         fields={'image': ('img.jpg',info["img"], 'image/*'),
                 'soilMoisture': str(info["soil"]),
                 'relHumidity': str(info["relhumidity"]), 
-                'plantName': "Basil",
-                'lightLuxLevel': '1',
-                'temperature': str( info["temperature"])
+                'plantName': "Minty MacMintface",
+                'lightLuxLevel': str(info["lightLuxLevel"]),
+                'temperature': str( info["temperature"]),
+                'colour'     : str(info["color"]),
+                'uniqueId'   : '1'  
                 }
     )
     r = requests.post(url,
@@ -43,6 +69,4 @@ def postToServer():
                       headers={'Content-Type': multipart_data.content_type})
 
     print(r.text)
-s.enter(delayUntilNextPost, priority, postToServer, ())
 
-s.run()
