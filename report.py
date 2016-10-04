@@ -5,6 +5,8 @@ import postToServer as p
 import colorSensor as l
 import sched
 import time
+import datetime
+from datetime import datetime as dt
 
 
 s = sched.scheduler(time.time, time.sleep)
@@ -21,6 +23,7 @@ global delay3
 delay3 = 60
 global delay4 
 delay4 = 0
+cameraDelay = 3600
 print (delay4)
 priority = 1
 
@@ -29,8 +32,10 @@ def takePicture():
     print(delay4)
     if (delay4 == 0):
 	    print("scheduling c")
+            # t = dt.combine(dt.now()  + datetime.timedelta(days=1), datetime.time(9) )    
 	    s.enter(delay1 +5, priority, c.capt, ())
-            delay4 = 21600 
+            # s.enterabs(time.mktime(t.timetuple()), 1, c.capt(), ())
+            delay4 = cameraDelay 
     else:
             delay4-=60
 
