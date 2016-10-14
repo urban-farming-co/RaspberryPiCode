@@ -54,7 +54,7 @@ def getStuff():
     # has a new image been taken?
     lastmod =  os.path.getmtime(path)
     print(str(lastmod ) + "    " + str(lastImageUpdate))
-    if lastmod>lastImageUpdate and int(lux)>0:
+    if lastmod>lastImageUpdate and int(lux)>15:
         print("Sending IMAGE")
         info["img"] = open(path, 'rb')
         updateLastImageVariable( lastmod)
