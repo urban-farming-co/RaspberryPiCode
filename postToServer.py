@@ -80,7 +80,7 @@ def postToServer():
                 'lightLuxLevel': str(info["lightLuxLevel"]),
                 'temperature': str( info["temperature"]),
                 'colour'     : str(info["color"]),
-                'uniqueId'   : '1'  
+                'deviceID'   : '1'  
                 }
     )
     r = requests.post(url,
