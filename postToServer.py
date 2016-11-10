@@ -44,9 +44,9 @@ def getStuff():
     # Create a dictionary to store the variables in.
     info = {}
     # If the humidity level is none, ie. the sensor broke, return 0
-    info["relhumidity"] = float(r) if r != None else 0 
+    info["relhumidity"] = float(r) if r != "None" else 0 
     # If the humidity level is none, ie. the sensor broke, return 0
-    info["temperature"] = float(t) if t != None else 0
+    info["temperature"] = float(t) if t != "None" else 0
     info["color"] = color
     info["soil"] = soil
     info["lightLuxLevel"] = lux
